@@ -1,4 +1,4 @@
-#include "Remuxer.h"
+#include <Remuxer.h>
 
 #include <atomic>
 #include <condition_variable>
@@ -6,23 +6,19 @@
 #include <iostream>
 #include <mutex>
 
-namespace
-{
+namespace {
 std::atomic_bool signalIsReceived = {false};
 std::condition_variable signalCv;
 std::mutex signalMx;
-} //
+}
 
-int main()
-{
-    std::signal(SIGINT, [](int signal)
-    {
+int main() {
+    std::signal(SIGINT, [](int signal) {
         signalIsReceived = true;
         signalCv.notify_one();
     });
 
-    try
-    {
+    try {
         AvCpp::Remuxer remuxer;
 
         remuxer.Open(AvCpp::Demuxer::Parameters{"/mnt/c/share/Camera01/1.mp4"},
@@ -33,8 +29,7 @@ int main()
 
         remuxer.Close();
     }
-    catch (const std::exception& exception)
-    {
+    catch (const std::exception& exception) {
         std::cerr << exception.what() << std::endl;
         return -1;
     }
